@@ -2,6 +2,7 @@ const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const app = express()
 const fortune = require('./lib/fortune')
+const handlers = require('./lib/handlers')
 
 // Настройка механизма представлений Handlebars.
 app.engine('handlebars', expressHandlebars.engine({
@@ -13,23 +14,16 @@ const port = process.env.PORT || 3000
 
 app.use(express.static(__dirname + '/public'))
 
-app.get('/', (req, res) => res.render('home'))
+app.get('/', handlers.home)
 
 app.get('/about', (req, res) => {
-    res.render('about', { fortune: fortune.getFortune() })
+    res.render('about', handlers.about)
 })
 
 // Пользовательская страница 404
-app.use((req, res) => {
- res.status(404)
- res.render('404')
-})
+app.use(handlers.notFound)
 // Пользовательская страница 500
-app.use((err, req, res, next) => {
-console.error(err.message)
- res.status(500)
- res.render('500')
-})
+app.use(handlers.serverError)
 
 
 app.listen(port, () => console.log(
