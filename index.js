@@ -1,7 +1,6 @@
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const app = express()
-const fortune = require('./lib/fortune')
 const handlers = require('./lib/handlers')
 
 // Настройка механизма представлений Handlebars.
@@ -26,6 +25,11 @@ app.use(handlers.notFound)
 app.use(handlers.serverError)
 
 
-app.listen(port, () => console.log(
- `Express запущен на http://localhost:${port}; ` +
- `нажмите Ctrl+C для завершения.` ))
+if (require.main === module) {
+    app.listen(port, () => {
+    console.log( `Express запущен на http://localhost:${port}` +
+    '; нажмите Ctrl+C для завершения.' )
+    })
+   } else {
+    module.exports = app
+   }
